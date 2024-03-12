@@ -1,6 +1,6 @@
 package com.example.genshinhandbook.data.remotedatasource
 
-import com.example.genshinhandbook.data.Character
+import com.example.genshinhandbook.data.model.Character
 import io.reactivex.rxjava3.core.Single
 import javax.inject.Inject
 

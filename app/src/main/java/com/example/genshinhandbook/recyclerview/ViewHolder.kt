@@ -3,8 +3,7 @@ package com.example.genshinhandbook.recyclerview
 import android.annotation.SuppressLint
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
-import com.example.genshinhandbook.R
-import com.example.genshinhandbook.data.CharacterCard
+import com.example.genshinhandbook.data.model.CharacterCard
 import com.example.genshinhandbook.databinding.RecyclerviewItemBinding
 
 class ViewHolder(

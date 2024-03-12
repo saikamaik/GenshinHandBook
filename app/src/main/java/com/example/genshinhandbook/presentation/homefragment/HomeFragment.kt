@@ -13,20 +13,25 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.genshinhandbook.data.Character
-import com.example.genshinhandbook.data.CharacterCard
+import com.example.genshinhandbook.App
+import com.example.genshinhandbook.data.model.Character
+import com.example.genshinhandbook.data.model.CharacterCard
 import com.example.genshinhandbook.databinding.FragmentHomeBinding
 import com.example.genshinhandbook.recyclerview.RecyclerViewAdapter
-import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
+import javax.inject.Inject
 
-@AndroidEntryPoint
+
 class HomeFragment : Fragment() {
 
     val compositeDisposable = CompositeDisposable()
-    private lateinit var viewModel: HomeViewModel
+
+    @Inject
+    lateinit var viewModelFactory: HomeViewModelFactory
+
+    lateinit var viewModel: HomeViewModel
     private lateinit var binding: FragmentHomeBinding
     private var charactersList: List<Character> = listOf()
     private var charactersPhotoList: List<CharacterCard> = listOf()
@@ -44,10 +49,17 @@ class HomeFragment : Fragment() {
         return binding.root
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        (activity?.application as App).getAppComponent().injectHomeFragment(this)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        initViewModel()
+        viewModel = ViewModelProvider(this, viewModelFactory)[HomeViewModel::class.java]
+
         initRecyclerView()
         getCharacters()
 
@@ -56,10 +68,6 @@ class HomeFragment : Fragment() {
                 navigateToCharactersInfoFragment(id)
             }
         }
-    }
-
-    private fun initViewModel() {
-        viewModel = ViewModelProvider(this)[HomeViewModel::class.java]
     }
 
     private fun initRecyclerView() {

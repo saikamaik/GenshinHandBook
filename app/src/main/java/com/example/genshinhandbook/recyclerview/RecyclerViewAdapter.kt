@@ -5,8 +5,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.example.genshinhandbook.R
-import com.example.genshinhandbook.data.CharacterCard
+import com.example.genshinhandbook.data.model.CharacterCard
 import com.example.genshinhandbook.databinding.RecyclerviewItemBinding
 import com.example.genshinhandbook.utils.MyDiffUtil
 

@@ -9,12 +9,15 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import coil.load
-import com.example.genshinhandbook.data.Character
+import com.example.genshinhandbook.App
+import com.example.genshinhandbook.data.model.Character
 import com.example.genshinhandbook.databinding.FragmentItemInfoBinding
-import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
-@AndroidEntryPoint
 class ItemInfoFragment : Fragment() {
+
+    @Inject
+    lateinit var itemInfoViewModelFactory: ItemInfoViewModelFactory
 
     private lateinit var viewModel: ItemInfoViewModel
     private lateinit var binding: FragmentItemInfoBinding
@@ -28,11 +31,16 @@ class ItemInfoFragment : Fragment() {
         return binding.root
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        (activity?.application as App).getAppComponent().injectItemInfoFragment(this)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-//        val itemInfoViewModelFactory = ItemInfoViewModelFactory()
-        viewModel = ViewModelProvider(this)[ItemInfoViewModel::class.java]
+        viewModel = ViewModelProvider(this, itemInfoViewModelFactory)[ItemInfoViewModel::class.java]
 
         binding.toolbarCancel.setNavigationOnClickListener {
             findNavController().popBackStack()
@@ -43,9 +51,7 @@ class ItemInfoFragment : Fragment() {
     }
 
     private fun initView() {
-        var character: Character?
         viewModel.getOneCharacter(args.charId).observe(viewLifecycleOwner) {
-            character = it
             setUpCard(it)
         }
     }

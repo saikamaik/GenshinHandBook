@@ -1,4 +1,4 @@
-package com.example.genshinhandbook.data
+package com.example.genshinhandbook.data.model
 
 data class Character(
     val name: String,

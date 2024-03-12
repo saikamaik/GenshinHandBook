@@ -1,7 +1,7 @@
 package com.example.genshinhandbook.utils
 
 import androidx.recyclerview.widget.DiffUtil
-import com.example.genshinhandbook.data.CharacterCard
+import com.example.genshinhandbook.data.model.CharacterCard
 
 class MyDiffUtil(
     private val oldList: List<CharacterCard>,
