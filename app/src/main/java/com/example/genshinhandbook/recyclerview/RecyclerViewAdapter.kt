@@ -35,8 +35,6 @@ class RecyclerViewAdapter(
     @SuppressLint("ResourceAsColor")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
-//        if (characters[position].rarity != 5) holder.itemView.setBackgroundColor(R.color.purple)
-
         holder.bind(characters[position])
         holder.itemView.setOnClickListener {
             callback.onItemClicked(characters[position])

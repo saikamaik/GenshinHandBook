@@ -30,6 +30,11 @@ class MyDiffUtil(
                 false
             }
 
+            oldList[oldItemPosition].rarity != newList[newItemPosition].rarity
+            -> {
+                false
+            }
+
             else -> true
         }
     }

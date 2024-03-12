@@ -61,7 +61,6 @@ dependencies {
 
     // ViewModel LifeData
     implementation("androidx.legacy:legacy-support-v4:1.0.0")
-    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.7.0")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0")
 
     // Navigation Component
@@ -80,16 +79,15 @@ dependencies {
     implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesKotlinVer")
     implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutinesKotlinVer")
 
-//    // Hilt
-//    implementation("com.google.dagger:hilt-android:2.51")
-//    kapt("com.google.dagger:hilt-android-compiler:2.51")
-
     // Dagger
     implementation ("com.google.dagger:dagger:$daggerVer")
     implementation ("com.google.dagger:dagger-android:$daggerVer")
     implementation ("com.google.dagger:dagger-android-support:$daggerVer")
     kapt ("com.google.dagger:dagger-compiler:$daggerVer")
     kapt ("com.google.dagger:dagger-android-processor:$daggerVer")
+
+    // Shimmer for loading items
+    implementation("com.facebook.shimmer:shimmer:0.1.0")
 
     // Coil
     implementation("io.coil-kt:coil:2.5.0")

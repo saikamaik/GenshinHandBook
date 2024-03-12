@@ -1,6 +1,5 @@
 package com.example.genshinhandbook.presentation.homefragment
 
-import android.annotation.SuppressLint
 import android.content.res.Configuration
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,38 +8,29 @@ import android.view.ViewGroup
 import android.widget.ProgressBar
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.genshinhandbook.App
-import com.example.genshinhandbook.data.model.Character
 import com.example.genshinhandbook.data.model.CharacterCard
 import com.example.genshinhandbook.databinding.FragmentHomeBinding
 import com.example.genshinhandbook.recyclerview.RecyclerViewAdapter
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.disposables.CompositeDisposable
-import io.reactivex.rxjava3.schedulers.Schedulers
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
 class HomeFragment : Fragment() {
-
-    val compositeDisposable = CompositeDisposable()
 
     @Inject
     lateinit var viewModelFactory: HomeViewModelFactory
 
     lateinit var viewModel: HomeViewModel
     private lateinit var binding: FragmentHomeBinding
-    private var charactersList: List<Character> = listOf()
-    private var charactersPhotoList: List<CharacterCard> = listOf()
-    private var recyclerViewAdapter: RecyclerViewAdapter =
-        RecyclerViewAdapter(charactersPhotoList, object : RecyclerViewAdapter.Callback {
-            override fun onItemClicked(item: CharacterCard) {
-                viewModel.onCardClicked(nameConverter(item.name))
-            }
-        })
+    private lateinit var recyclerViewAdapter: RecyclerViewAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -51,7 +41,6 @@ class HomeFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         (activity?.application as App).getAppComponent().injectHomeFragment(this)
     }
 
@@ -61,17 +50,19 @@ class HomeFragment : Fragment() {
         viewModel = ViewModelProvider(this, viewModelFactory)[HomeViewModel::class.java]
 
         initRecyclerView()
-        getCharacters()
+        viewModel.getAllCharacters()
+        observeFlow()
 
-        viewModel.navigateToItemInfo.observe(viewLifecycleOwner) { id ->
-            id?.let {
-                navigateToCharactersInfoFragment(id)
-            }
-        }
     }
 
     private fun initRecyclerView() {
 
+        recyclerViewAdapter = RecyclerViewAdapter(viewModel.charactersPhotoList.value,
+            object : RecyclerViewAdapter.Callback {
+                override fun onItemClicked(item: CharacterCard) {
+                    viewModel.onCardClicked(viewModel.nameConverter(item.name))
+                }
+            })
         val recyclerView: RecyclerView = binding.recyclerViewHome
         val progressBar: ProgressBar = binding.progressbar
         progressBar.isVisible = false
@@ -86,48 +77,28 @@ class HomeFragment : Fragment() {
         recyclerView.adapter = recyclerViewAdapter
     }
 
-    @SuppressLint("CheckResult")
-    private fun getCharacters() {
-
-        viewModel.getAllCharacters().subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread()).doOnSubscribe {
-
-            }.subscribe({
-                charactersList = it
-                charactersPhotoList = charactersList.map { character ->
-                    CharacterCard(
-                        nameConverter(character.name),
-                        character.name,
-                        "https://genshin.jmp.blue/characters/${nameConverter(character.name)}/icon-big",
-                        character.rarity
-                    )
+    private fun observeFlow() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.charactersPhotoList.collect { data ->
+                    recyclerViewAdapter.setData(data)
                 }
-                recyclerViewAdapter.setData(charactersPhotoList)
-            }, {
-                it.printStackTrace()
-            })
-    }
-
-    // Странная апи, я не знаю как лучше реализовать
-
-    private fun nameConverter(name: String): String {
-        if (name == "Kamisato Ayaka" || name == "Kamisato Ayato" || name == "Kaedehara Kazuha"
-            || name == "Sangonomiya Kokomi" || name == "Kujou Sara"
-        ) {
-            return name.substringAfter(" ").lowercase()
-        } else if (name == "Raiden Shogun") return name.substringBefore(" ").lowercase()
-        else if (name.contains(" ")) {
-            return name.replace(" ", "-").lowercase()
+            }
         }
-        return name.lowercase()
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.navigateToItemInfo.collect() { id ->
+                    if (id != null) navigateToCharactersInfoFragment(id)
+                }
+            }
+        }
     }
 
     private fun navigateToCharactersInfoFragment(id: String) {
-
         val action = HomeFragmentDirections.actionHomeFragmentToItemInfoFragment(id)
         findNavController().navigate(action)
         viewModel.doneNavigating()
-
     }
 
 }

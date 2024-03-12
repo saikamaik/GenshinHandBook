@@ -2,22 +2,13 @@ package com.example.genshinhandbook.data.remotedatasource
 
 import com.example.genshinhandbook.data.model.Character
 import io.reactivex.rxjava3.core.Single
-import javax.inject.Inject
 
-class CharacterRepository @Inject constructor(
-    private val apiService: ApiService
-) {
+interface CharacterRepository {
 
-    fun getAllCharacters(): Single<List<Character>> {
-        return apiService.getAllDetailedCharacters()
-    }
+    fun getAllCharacters(): Single<List<Character>>
 
-    fun getOneCharacterData(id: String): Single<Character> {
-        return apiService.getOneCharacterData(id)
-    }
+    fun getOneCharacterData(id: String): Single<Character>
 
-    fun getAllCharactersName(): Single<List<String>>{
-        return apiService.getAllCharactersName()
-    }
+    fun getAllCharactersName(): Single<List<String>>
 
 }

@@ -1,7 +1,7 @@
 package com.example.genshinhandbook.di.module
 
 import com.example.genshinhandbook.data.remotedatasource.ApiService
-import com.example.genshinhandbook.data.remotedatasource.CharacterRepository
+import com.example.genshinhandbook.data.remotedatasource.CharacterRepositoryImpl
 import dagger.Module
 import dagger.Provides
 
@@ -9,8 +9,8 @@ import dagger.Provides
 class DataModule {
 
     @Provides
-    fun provideCharacterRepository(apiService: ApiService): CharacterRepository {
-        return CharacterRepository(apiService)
+    fun provideCharacterRepository(apiService: ApiService): CharacterRepositoryImpl {
+        return CharacterRepositoryImpl(apiService)
     }
 
 }
