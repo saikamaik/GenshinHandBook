@@ -1,8 +1,8 @@
 package com.example.genshinhandbook.presentation.homefragment
 
-import android.app.Application
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.genshinhandbook.App
 import com.example.genshinhandbook.data.Character
 import com.example.genshinhandbook.data.remotedatasource.CharacterRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,8 +22,20 @@ class HomeViewModel @Inject constructor(
         return repository.getAllCharacters()
     }
 
-    fun getAllCharactersNames(): Single<List<String>>{
+    fun getAllCharactersNames(): Single<List<String>> {
         return repository.getAllCharactersName()
+    }
+
+    private val _navigateToItemInfo = MutableLiveData<String?>()
+    val navigateToItemInfo: LiveData<String?>
+        get() = _navigateToItemInfo
+
+    fun doneNavigating() {
+        _navigateToItemInfo.value = null
+    }
+
+    fun onCardClicked(item: String) {
+        _navigateToItemInfo.value = item
     }
 
 }

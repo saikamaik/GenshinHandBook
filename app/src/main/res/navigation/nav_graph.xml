@@ -15,6 +15,11 @@
     <fragment
         android:id="@+id/itemInfoFragment"
         android:name="com.example.genshinhandbook.presentation.iteminfofragment.ItemInfoFragment"
-        android:label="ItemInfoFragment" />
+        android:label="ItemInfoFragment">
+        <argument
+            android:name="charId"
+            app:argType="string" />
+    </fragment>
+
 
 </navigation>
