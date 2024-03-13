@@ -3,15 +3,15 @@ package com.example.genshinhandbook.recyclerview
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.example.genshinhandbook.R
-import com.example.genshinhandbook.data.model.CharacterCard
 import com.example.genshinhandbook.databinding.RecyclerviewItemBinding
+import com.example.genshinhandbook.presentation.entity.CharacterDTO
 
 class ViewHolder(
     private val binding: RecyclerviewItemBinding
 ) :
     RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(characterCard: CharacterCard) {
+    fun bind(characterCard: CharacterDTO) {
 
         binding.tvCharacterName.text = characterCard.name
         binding.mainImg.load(characterCard.url)

@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
@@ -15,8 +16,8 @@ import coil.imageLoader
 import coil.load
 import coil.request.ImageRequest
 import com.example.genshinhandbook.App
-import com.example.genshinhandbook.data.model.Character
 import com.example.genshinhandbook.databinding.FragmentItemInfoBinding
+import com.example.genshinhandbook.presentation.entity.CharacterDTO
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -51,6 +52,7 @@ class ItemInfoFragment : Fragment() {
             findNavController().popBackStack()
         }
 
+        showShimmer()
         viewModel.getOneCharacter(args.charId)
         observeFlow()
     }
@@ -65,27 +67,37 @@ class ItemInfoFragment : Fragment() {
         }
     }
 
-    private fun setUpCard(character: Character) {
+    private fun setUpCard(character: CharacterDTO) {
         binding.tvCharacterName.text = character.name
         binding.tvCharacterTitle.text = character.title
         val request = ImageRequest.Builder(requireContext())
-            .data("https://genshin.jmp.blue/characters/${args.charId.lowercase()}/portrait")
+            .data("https://genshin.jmp.blue/characters/${character.id}/portrait")
             .target(
-                onStart = { placeholder ->
-                    binding.shimmerLayout.startShimmerAnimation()
+                onStart = {
+                    showShimmer()
                 },
                 onSuccess = { result ->
                     binding.ivInfo.load(result)
-                    binding.shimmerLayout.stopShimmerAnimation()
-                    binding.shimmerLayout.visibility = View.GONE
+                    stopShimmer()
                 },
                 onError = {
-                    binding.ivInfo.load("https://genshin.jmp.blue/characters/${args.charId.lowercase()}/icon-big")
-                    binding.shimmerLayout.stopShimmerAnimation()
-                    binding.shimmerLayout.visibility = View.GONE
+                    binding.ivInfo.load(character.url)
+                    stopShimmer()
                 }
             )
             .build()
         context?.imageLoader?.enqueue(request)
+    }
+
+    private fun showShimmer() {
+        binding.characterLayout.isVisible = false
+        binding.shimmerLayout.isVisible = true
+        binding.shimmerLayout.startShimmerAnimation()
+    }
+
+    private fun stopShimmer() {
+        binding.characterLayout.isVisible = true
+        binding.shimmerLayout.stopShimmerAnimation()
+        binding.shimmerLayout.isVisible = false
     }
 }

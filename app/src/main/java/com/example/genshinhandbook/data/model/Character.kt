@@ -27,23 +27,3 @@ data class Talents (
     val level: Int? = null,
     val type: String? = null
 )
-
-data class CharacterCard(
-    val id: String,
-    val name: String,
-    val url: String,
-    val rarity: Int
-)
-
-//data class SkillTalent (
-//    val name: String,
-//    val unlock: String,
-//    val description: String,
-//    val upgrades: List<Upgrade>,
-//    val type: String
-//)
-//
-//data class Upgrade (
-//    val name: String,
-//    val value: String
-//)

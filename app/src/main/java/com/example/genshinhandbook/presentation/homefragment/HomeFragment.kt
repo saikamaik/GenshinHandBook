@@ -5,8 +5,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ProgressBar
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
@@ -16,8 +14,8 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.genshinhandbook.App
-import com.example.genshinhandbook.data.model.CharacterCard
 import com.example.genshinhandbook.databinding.FragmentHomeBinding
+import com.example.genshinhandbook.presentation.entity.CharacterDTO
 import com.example.genshinhandbook.recyclerview.RecyclerViewAdapter
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -59,13 +57,11 @@ class HomeFragment : Fragment() {
 
         recyclerViewAdapter = RecyclerViewAdapter(viewModel.charactersPhotoList.value,
             object : RecyclerViewAdapter.Callback {
-                override fun onItemClicked(item: CharacterCard) {
-                    viewModel.onCardClicked(viewModel.nameConverter(item.name))
+                override fun onItemClicked(item: CharacterDTO) {
+                    item.id?.let { viewModel.onCardClicked(it) }
                 }
             })
         val recyclerView: RecyclerView = binding.recyclerViewHome
-        val progressBar: ProgressBar = binding.progressbar
-        progressBar.isVisible = false
 
         var linearLayoutManager = GridLayoutManager(this.context, 2)
         val orientation = resources.configuration.orientation
