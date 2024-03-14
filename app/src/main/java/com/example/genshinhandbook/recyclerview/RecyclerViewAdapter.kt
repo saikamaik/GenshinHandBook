@@ -5,17 +5,17 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.genshinhandbook.databinding.RecyclerviewItemBinding
-import com.example.genshinhandbook.presentation.entity.CharacterDTO
+import com.example.genshinhandbook.presentation.entity.Character
 import com.example.genshinhandbook.utils.MyDiffUtil
 
 class RecyclerViewAdapter(
-    private var characters: List<CharacterDTO>,
+    private var characters: List<Character>,
     private val callback: Callback
 ) :
     RecyclerView.Adapter<ViewHolder>() {
 
     interface Callback {
-        fun onItemClicked(item: CharacterDTO)
+        fun onItemClicked(item: Character)
     }
 
     override fun onCreateViewHolder(
@@ -38,7 +38,7 @@ class RecyclerViewAdapter(
         }
     }
 
-    fun setData(newCharacterList: List<CharacterDTO>) {
+    fun setData(newCharacterList: List<Character>) {
         val diffUtil = MyDiffUtil(characters, newCharacterList)
         val diffResults = DiffUtil.calculateDiff(diffUtil)
         characters = newCharacterList

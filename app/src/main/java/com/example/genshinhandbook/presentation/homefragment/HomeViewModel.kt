@@ -3,7 +3,7 @@ package com.example.genshinhandbook.presentation.homefragment
 import android.annotation.SuppressLint
 import androidx.lifecycle.ViewModel
 import com.example.genshinhandbook.data.remotedatasource.CharacterRepositoryImpl
-import com.example.genshinhandbook.presentation.entity.CharacterDTO
+import com.example.genshinhandbook.presentation.entity.Character
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.schedulers.Schedulers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -13,21 +13,32 @@ class HomeViewModel @Inject constructor(
     private val repository: CharacterRepositoryImpl
 ) : ViewModel() {
 
-    private val _charactersPhotoList = MutableStateFlow<List<CharacterDTO>>(listOf())
+    private val _charactersPhotoList = MutableStateFlow<List<Character>>(listOf())
     val charactersPhotoList = _charactersPhotoList
 
     private val _navigateToItemInfo = MutableStateFlow<String?>(null)
     val navigateToItemInfo = _navigateToItemInfo
 
+    private var charactersNameList = listOf<String>()
+
     @SuppressLint("CheckResult")
-    fun getAllCharacters() {
-        repository.getAllCharacters().subscribeOn(Schedulers.io())
+    fun getAllCharactersDTO() {
+        repository.getAllCharactersName().subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({
-                _charactersPhotoList.value = it
-            }, {
-                it.printStackTrace()
-            })
+            .flatMap {
+                charactersNameList = it
+                repository.getAllCharacters()
+            }
+            .subscribe { characterDTOList ->
+                characterDTOList.map { character ->
+                    for (name in charactersNameList) {
+                        if (character.name?.contains(name.replace("-", " "), true) == true) {
+                            character.id = name
+                        }
+                    }
+                }
+                _charactersPhotoList.value = characterDTOList
+            }
     }
 
     fun doneNavigating() {
@@ -37,5 +48,4 @@ class HomeViewModel @Inject constructor(
     fun onCardClicked(item: String) {
         _navigateToItemInfo.value = item
     }
-
 }

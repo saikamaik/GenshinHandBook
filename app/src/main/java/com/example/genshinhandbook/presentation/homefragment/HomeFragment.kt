@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.genshinhandbook.App
 import com.example.genshinhandbook.databinding.FragmentHomeBinding
-import com.example.genshinhandbook.presentation.entity.CharacterDTO
+import com.example.genshinhandbook.presentation.entity.Character
 import com.example.genshinhandbook.recyclerview.RecyclerViewAdapter
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -47,9 +47,9 @@ class HomeFragment : Fragment() {
 
         viewModel = ViewModelProvider(this, viewModelFactory)[HomeViewModel::class.java]
 
-        initRecyclerView()
-        viewModel.getAllCharacters()
+        viewModel.getAllCharactersDTO()
         observeFlow()
+        initRecyclerView()
 
     }
 
@@ -57,7 +57,7 @@ class HomeFragment : Fragment() {
 
         recyclerViewAdapter = RecyclerViewAdapter(viewModel.charactersPhotoList.value,
             object : RecyclerViewAdapter.Callback {
-                override fun onItemClicked(item: CharacterDTO) {
+                override fun onItemClicked(item: Character) {
                     item.id?.let { viewModel.onCardClicked(it) }
                 }
             })

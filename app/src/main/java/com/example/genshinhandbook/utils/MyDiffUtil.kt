@@ -1,11 +1,11 @@
 package com.example.genshinhandbook.utils
 
 import androidx.recyclerview.widget.DiffUtil
-import com.example.genshinhandbook.presentation.entity.CharacterDTO
+import com.example.genshinhandbook.presentation.entity.Character
 
 class MyDiffUtil(
-    private val oldList: List<CharacterDTO>,
-    private val newList: List<CharacterDTO>
+    private val oldList: List<Character>,
+    private val newList: List<Character>
 ) : DiffUtil.Callback() {
 
     override fun getOldListSize(): Int {
